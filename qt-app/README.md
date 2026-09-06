@@ -1,6 +1,7 @@
 # qt-app —— 移动端 APP（Qt C++）
 
-> ⚠️ **状态：结构规划**。本仓库开发机无 Qt / Android SDK，无法在此构建。本目录为 Qt 客户端开发的模块划分与页面规划，开发时在 Qt Creator 中新建工程（建议 QML + Widgets 混合或纯 QML，按团队熟悉度取舍）。
+> ✅ **状态：桌面演示版已实现并可运行**（`desktop-demo/`，Qt 6.8 + MinGW，Windows）。构建：`cd desktop-demo && qmake handcraft_client.pro && mingw32-make`，产物 `release/handcraft_client.exe`；支持命令行自动登录 `handcraft_client.exe [用户名] [密码]`（演示账号见 docs/06）。四角色界面截图见 `docs/screenshots/`。UI 采用蓝白主题（借鉴 vLLM-HUST 官网设计语言，见 `desktop-demo/ui-preview.html` 预览）。本机未安装 Android SDK，APK 打包留待具备 Android 环境后执行（同源代码可迁移）。
+> 下方页面规划为设计与 Android 迁移参考。
 
 ## 定位（对应规划文档"APP 客户端"）
 
