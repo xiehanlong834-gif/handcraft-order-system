@@ -13,6 +13,57 @@
 #include "apiclient.h"
 #include "mainwindow.h"
 
+// 注册对话框: 公开自助注册(仅客户角色, 后端强制)
+class RegisterDialog : public QDialog {
+public:
+    RegisterDialog(QWidget *parent = nullptr) : QDialog(parent) {
+        setWindowTitle("注册新账号 - 独立手作创作者订单管理系统");
+        auto *lay = new QFormLayout(this);
+        m_nick = new QLineEdit(this); m_nick->setPlaceholderText("称呼/昵称(必填), 如: 小鱼手作粉");
+        m_phone = new QLineEdit(this); m_phone->setPlaceholderText("手机号(选填)");
+        m_user = new QLineEdit(this); m_user->setPlaceholderText("3-20位字母/数字/下划线");
+        m_pwd = new QLineEdit(this); m_pwd->setPlaceholderText("至少 6 位");
+        m_pwd->setEchoMode(QLineEdit::Password);
+        lay->addRow("称呼:", m_nick);
+        lay->addRow("手机号:", m_phone);
+        lay->addRow("用户名:", m_user);
+        lay->addRow("密码:", m_pwd);
+        m_status = new QLabel("注册后将自动成为「客户」角色, 可提交定制与追踪订单", this);
+        m_status->setWordWrap(true);
+        lay->addRow(m_status);
+        auto *bb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+        bb->button(QDialogButtonBox::Ok)->setText("注册");
+        bb->button(QDialogButtonBox::Cancel)->setText("取消");
+        lay->addRow(bb);
+        connect(bb, &QDialogButtonBox::accepted, this, &RegisterDialog::tryReg);
+        connect(bb, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    }
+    QString username() const { return m_user->text().trimmed(); }
+    QString password() const { return m_pwd->text(); }
+
+private:
+    void tryReg() {
+        if (m_user->text().trimmed().isEmpty() || m_pwd->text().isEmpty() || m_nick->text().trimmed().isEmpty()) {
+            m_status->setText("请完整填写称呼/用户名/密码");
+            return;
+        }
+        m_status->setText("注册中...");
+        ApiClient::inst()->post("/api/auth/register",
+            QJsonObject{{"username", m_user->text().trimmed()}, {"password", m_pwd->text()},
+                        {"nickname", m_nick->text().trimmed()}, {"phone", m_phone->text().trimmed()}},
+            [this](int code, const QJsonValue &d) {
+                if (code != 200) {
+                    m_status->setText("注册失败: " + ApiClient::inst()->lastError());
+                    return;
+                }
+                m_status->setText(d.toObject().value("message").toString());
+                accept();
+            });
+    }
+    QLineEdit *m_nick = nullptr, *m_phone = nullptr, *m_user = nullptr, *m_pwd = nullptr;
+    QLabel *m_status = nullptr;
+};
+
 // 登录对话框: 演示账号 creator01/admin01/finance01/xiaolin/may, 密码 123456
 class LoginDialog : public QDialog {
 public:
@@ -34,6 +85,19 @@ public:
         lay->addRow(bb);
         connect(bb, &QDialogButtonBox::accepted, this, &LoginDialog::tryLogin);
         connect(bb, &QDialogButtonBox::rejected, this, &QDialog::reject);
+        auto *reg = new QPushButton("没有账号？注册新账号", this);
+        reg->setCursor(Qt::PointingHandCursor);
+        reg->setStyleSheet("QPushButton{border:none;color:#1d4ed8;background:transparent;font-size:12px;}"
+                           "QPushButton:hover{color:#1e40af;}");
+        connect(reg, &QPushButton::clicked, this, [this]() {
+            RegisterDialog d(this);
+            if (d.exec() == QDialog::Accepted) {
+                m_user->setText(d.username());
+                m_pwd->setText(d.password());
+                m_status->setText("注册成功！账号已自动填入, 点击「登录」即可进入");
+            }
+        });
+        lay->addRow(reg);
     }
 
 public:

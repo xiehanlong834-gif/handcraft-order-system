@@ -75,6 +75,20 @@ check("越权拦截: 客户建单 403", ok)
 ok, code, _ = call("POST", "/api/orders", ft, body={"customerId": 1, "productName": "x"}, expect=403)
 check("越权拦截: 财务建单 403", ok)
 
+print("\n[1b] 公开自助注册(仅客户角色)")
+import time as _t
+reg_user = "reg_%d" % (_t.time() % 1000000)
+ok, code, r = call("POST", "/api/auth/register", body={"username": reg_user, "password": "pass123", "nickname": "E2E注册用户", "phone": "13600000000"}, expect=200)
+check("自助注册成功且角色=customer", ok and r.get("roleCode") == "customer", str(r))
+ok, code, _ = call("POST", "/api/auth/register", body={"username": reg_user, "password": "pass123", "nickname": "重复"}, expect=400)
+check("重复用户名注册 → 400", ok)
+ok, code, _ = call("POST", "/api/auth/register", body={"username": "weak1", "password": "123", "nickname": "x"}, expect=400)
+check("弱密码注册 → 400", ok)
+reg = login(reg_user, "pass123")
+check("新注册客户可登录", bool(reg.get("token")))
+ok, code, _ = call("POST", "/api/orders", reg["token"], body={"customerId": 1, "productName": "越权"}, expect=403)
+check("注册账号(客户)建单仍被拦截 403", ok)
+
 print("\n[2] 建单 + 智能订单分类(创新点一)")
 ok, _, r = call("POST", "/api/orders", ct, body={
     "customerId": 1, "productName": "刻名字的定制银手镯", "requirement": "刻 LOVE, 专属款",

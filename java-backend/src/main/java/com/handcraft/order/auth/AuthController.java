@@ -4,6 +4,7 @@ import com.handcraft.order.common.ApiException;
 import com.handcraft.order.common.AuthContext;
 import com.handcraft.order.common.TokenStore;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,59 @@ public class AuthController {
         this.jdbc = jdbc;
         this.encoder = encoder;
         this.tokenStore = tokenStore;
+    }
+
+    /**
+     * 公开自助注册: 只能注册为客户角色。
+     * 自动创建 customer 档案, 归属系统首个启用的创作者(单工作室场景)。
+     * 禁止自助注册 creator/admin/finance(高权限账号仅管理员可建)。
+     */
+    @PostMapping("/register")
+    @Transactional
+    public Map<String, Object> register(@RequestBody Map<String, String> body) {
+        String username = body.getOrDefault("username", "").trim();
+        String password = body.getOrDefault("password", "");
+        String nickname = body.getOrDefault("nickname", "").trim();
+        String phone = body.getOrDefault("phone", "").trim();
+        if (username.length() < 3 || username.length() > 20) {
+            throw ApiException.badRequest("用户名长度需 3-20 位");
+        }
+        if (!username.matches("[A-Za-z0-9_]+")) {
+            throw ApiException.badRequest("用户名仅允许字母/数字/下划线");
+        }
+        if (password.length() < 6) {
+            throw ApiException.badRequest("密码长度至少 6 位");
+        }
+        if (nickname.isEmpty()) {
+            throw ApiException.badRequest("请填写称呼(昵称)");
+        }
+        Integer dup = jdbc.queryForObject("SELECT COUNT(*) FROM `user` WHERE username = ?",
+                Integer.class, username);
+        if (dup != null && dup > 0) {
+            throw ApiException.badRequest("用户名已存在");
+        }
+        // 归属创作者: 系统内第一个启用的 creator 账号
+        List<Map<String, Object>> creators = jdbc.queryForList(
+                "SELECT u.user_id AS userId FROM `user` u JOIN role r ON r.role_id = u.role_id " +
+                "WHERE r.role_code = 'creator' AND u.status = 1 ORDER BY u.user_id LIMIT 1");
+        if (creators.isEmpty()) {
+            throw ApiException.badRequest("系统暂无可接单的创作者, 请联系管理员");
+        }
+        long creatorId = ((Number) creators.get(0).get("userId")).longValue();
+        Long customerRoleId = jdbc.queryForObject(
+                "SELECT role_id FROM role WHERE role_code = 'customer'", Long.class);
+
+        // 事务内: 客户档案 + 账号(BCrypt)
+        jdbc.update("INSERT INTO customer (name, phone, creator_id) VALUES (?,?,?)",
+                nickname, phone, creatorId);
+        long customerId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        jdbc.update("INSERT INTO `user` (username, password_hash, real_name, phone, role_id, customer_id, status) " +
+                        "VALUES (?,?,?,?,?,?,1)",
+                username, encoder.encode(password), nickname, phone, customerRoleId, customerId);
+        long userId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        return Map.of(
+                "userId", userId, "message", "注册成功, 默认角色: 客户",
+                "roleCode", "customer");
     }
 
     @PostMapping("/login")
