@@ -1,0 +1,3 @@
+# 本项目 Python 模块零第三方依赖（仅 Python 3.10+ 标准库）。
+# order_classifier / analytics / demo 开箱即用。
+# 若后续需要直连 MySQL, 可安装 PyMySQL: pip install pymysql
