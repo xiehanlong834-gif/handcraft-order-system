@@ -48,20 +48,23 @@ public class OrderClassifierClient {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
                 String line;
-                String lastJson = null;
                 while ((line = reader.readLine()) != null) {
                     stdout.append(line).append('\n');
-                    if (line.trim().startsWith("{")) {
-                        lastJson = line; // 容错: 取最后一个 JSON 行
-                    }
                 }
             }
             int exit = process.waitFor();
-            if (exit != 0 || lastJson == null) {
+            String output = stdout.toString().trim();
+            if (exit != 0 || output.isEmpty()) {
                 throw new IllegalStateException(
-                        "智能分类脚本执行失败 exit=" + exit + " output=" + stdout);
+                        "智能分类脚本执行失败 exit=" + exit + " output=" + output);
             }
-            return objectMapper.readTree(lastJson);
+            // 脚本输出为多行 JSON(缩进格式), 整体解析; 兜底取最后一行
+            try {
+                return objectMapper.readTree(output);
+            } catch (Exception e) {
+                String lastLine = output.substring(output.lastIndexOf('\n') + 1);
+                return objectMapper.readTree(lastLine);
+            }
         } catch (Exception e) {
             throw new IllegalStateException("调用智能分类模块失败", e);
         }

@@ -1,6 +1,6 @@
 # java-backend —— 业务接口层（Java REST API）
 
-> ⚠️ **状态：脚手架（未在本机编译验证）**。本仓库开发机无 JDK/Maven，代码按 Spring Boot 3 + JDK 17 规范编写，需在有对应环境的机器上 `mvn compile` 验证后继续开发。
+> ✅ **状态：已实现并通过端到端测试**。Spring Boot 3.2.5 + JDK 17 + MySQL 8 实测：`mvn package` 成功；E2E 四角色全流程测试 116/116 通过（见 `scripts/e2e_api_test.py`）。运行时需 MySQL 8（先执行 `sql/schema.sql`），数据库与脚本路径见 `application.yml`。
 
 ## 职责（对应规划文档"业务接口层"）
 

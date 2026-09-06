@@ -30,6 +30,7 @@ CREATE TABLE `user` (
   real_name     VARCHAR(50)  NULL COMMENT '姓名',
   phone         VARCHAR(20)  NULL COMMENT '手机号(界面脱敏展示)',
   role_id       INT UNSIGNED NOT NULL COMMENT '角色',
+  customer_id   INT UNSIGNED NULL COMMENT '客户角色关联的客户档案(客户账号用)',
   status        TINYINT      NOT NULL DEFAULT 1 COMMENT '1启用 0禁用',
   created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES role (role_id)
@@ -209,7 +210,8 @@ SELECT o.order_id, o.order_no, o.customer_id, c.name AS customer_name,
        o.created_at, o.actual_complete_date
 FROM `orders` o
 JOIN customer c ON c.customer_id = o.customer_id
-WHERE o.status IN ('COMPLETED','ARCHIVED');
+WHERE o.status = 'COMPLETED'
+   OR (o.status = 'ARCHIVED' AND o.actual_complete_date IS NOT NULL);
 
 -- -------------------------------------------------------------
 -- 14. 视图：低库存预警（stock_qty <= 阈值 且未禁用材料…按阈值判定）
@@ -221,16 +223,16 @@ FROM material m
 WHERE m.stock_qty <= m.low_stock_threshold;
 
 -- -------------------------------------------------------------
--- 15. 视图：距预估完成日期 <= 3 天且未完成的订单 → 工期提醒
+-- 15. 视图：距预估完成日期 <= 3 天(含已超期)且未完成的订单 → 工期提醒
 -- -------------------------------------------------------------
 CREATE OR REPLACE VIEW v_due_reminder AS
-SELECT o.order_id, o.order_no, c.name AS customer_name, o.product_name,
+SELECT o.order_id, o.order_no, o.creator_id, c.name AS customer_name, o.product_name,
        o.order_type, o.estimated_complete_date, o.status
 FROM `orders` o
 JOIN customer c ON c.customer_id = o.customer_id
 WHERE o.status NOT IN ('COMPLETED','CANCELLED','ARCHIVED')
   AND o.estimated_complete_date IS NOT NULL
-  AND DATEDIFF(o.estimated_complete_date, CURDATE()) BETWEEN 0 AND 3;
+  AND DATEDIFF(o.estimated_complete_date, CURDATE()) <= 3;
 
 -- =============================================================
 -- 初始化数据（演示用）
@@ -243,9 +245,9 @@ INSERT INTO role (role_code, role_name, description) VALUES
 ('finance', '财务查看者','专职查看经营报表与成本明细(只读)');
 
 INSERT INTO `user` (username, password_hash, real_name, role_id) VALUES
-('creator01', '$2a$10$HASH_REPLACE_ME', '陈手作',  (SELECT role_id FROM role WHERE role_code='creator')),
-('admin01',   '$2a$10$HASH_REPLACE_ME', '系统管理员', (SELECT role_id FROM role WHERE role_code='admin')),
-('finance01', '$2a$10$HASH_REPLACE_ME', '账房先生', (SELECT role_id FROM role WHERE role_code='finance'));
+('creator01', '$2a$10$0WUXJ4tle9QNQ2wMY6xqLudaa14HF/ZzKqG8XnKpaoP2wU7ykWVja', '陈手作',  (SELECT role_id FROM role WHERE role_code='creator')),
+('admin01',   '$2a$10$0WUXJ4tle9QNQ2wMY6xqLudaa14HF/ZzKqG8XnKpaoP2wU7ykWVja', '系统管理员', (SELECT role_id FROM role WHERE role_code='admin')),
+('finance01', '$2a$10$0WUXJ4tle9QNQ2wMY6xqLudaa14HF/ZzKqG8XnKpaoP2wU7ykWVja', '账房先生', (SELECT role_id FROM role WHERE role_code='finance'));
 
 INSERT INTO product_category (name, sort_no) VALUES
 ('手工饰品',1),('皮具',2),('烘焙',3),('陶艺',4),('编织',5);
@@ -263,3 +265,24 @@ INSERT INTO material (material_category_id, name, spec, unit, stock_qty, low_sto
 INSERT INTO customer (name, phone, wechat_id, tags, creator_id) VALUES
 ('小林', '13800001111', 'xiaolin_88', '老客,高复购,定制偏好', (SELECT user_id FROM `user` WHERE username='creator01')),
 ('阿May', '13800002222', 'may_may',   '新客,饰品',          (SELECT user_id FROM `user` WHERE username='creator01'));
+
+-- -------------------------------------------------------------
+-- 客户角色登录账号(与客户档案关联) —— 演示密码 123456
+-- -------------------------------------------------------------
+INSERT INTO `user` (username, password_hash, real_name, role_id, customer_id)
+SELECT 'xiaolin', '$2a$10$0WUXJ4tle9QNQ2wMY6xqLudaa14HF/ZzKqG8XnKpaoP2wU7ykWVja', '小林', r.role_id, 1
+FROM role r WHERE r.role_code = 'customer';
+INSERT INTO `user` (username, password_hash, real_name, role_id, customer_id)
+SELECT 'may', '$2a$10$0WUXJ4tle9QNQ2wMY6xqLudaa14HF/ZzKqG8XnKpaoP2wU7ykWVja', '阿May', r.role_id, 2
+FROM role r WHERE r.role_code = 'customer';
+
+-- -------------------------------------------------------------
+-- 后端专用数据库账号(最小权限: 仅 handcraft_order 库)
+-- -------------------------------------------------------------
+CREATE USER IF NOT EXISTS 'handcraft'@'%' IDENTIFIED BY 'handcraft123';
+GRANT ALL PRIVILEGES ON handcraft_order.* TO 'handcraft'@'%';
+FLUSH PRIVILEGES;
+
+-- 循环外键补充: user.customer_id → customer (两表均已建后执行)
+ALTER TABLE `user` ADD CONSTRAINT fk_user_customer
+  FOREIGN KEY (customer_id) REFERENCES customer (customer_id);

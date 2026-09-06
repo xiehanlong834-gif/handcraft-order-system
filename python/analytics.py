@@ -175,29 +175,74 @@ def render_report(report, title):
     return "\n".join(lines)
 
 
-if __name__ == "__main__":
-    # 命令行入口: python analytics.py <sqlite.db>  (结构见 analytics_demo.py 种子)
-    import sys, json
-    path = sys.argv[1] if len(sys.argv) > 1 else None
-    if not path:
-        print("用法: python analytics.py <sqlite.db>\n演示: python analytics_demo.py")
-        sys.exit(0)
+def _run(conn_factory, json_out=False):
+    """执行三张报表; conn_factory 返回已连接对象(需支持 Row 字典化)"""
     import sqlite3
-    conn = sqlite3.connect(path)
-    conn.row_factory = sqlite3.Row
+    conn = conn_factory()
+    if isinstance(conn, sqlite3.Connection):
+        conn.row_factory = sqlite3.Row
     def q(sql):
-        return [dict(r) for r in conn.execute(sql)]
+        cur = conn.cursor()
+        cur.execute(sql)
+        cols = [d[0] for d in cur.description]
+        rows = [dict(zip(cols, r)) for r in cur.fetchall()]
+        cur.close()
+        return rows
     completed = q("SELECT o.customer_id, c.name AS customer_name, "
                   "       o.quantity, o.unit_price, o.material_cost, o.labor_cost, "
                   "       COALESCE(o.actual_complete_date, o.created_at) AS completed_date "
-                  "FROM orders o JOIN customer c ON c.customer_id = o.customer_id "
-                  "WHERE o.status IN ('COMPLETED','ARCHIVED')")
+                  "FROM `orders` o JOIN customer c ON c.customer_id = o.customer_id "
+                  "WHERE o.status = 'COMPLETED' OR (o.status = 'ARCHIVED' AND o.actual_complete_date IS NOT NULL)")
     materials = q("SELECT m.name AS material_name, mc.name AS material_category, "
                   "       om.quantity_used, om.unit_cost "
                   "FROM order_material om JOIN material m ON m.material_id=om.material_id "
                   "LEFT JOIN material_category mc ON mc.material_category_id=m.material_category_id")
-    print(render_report(profit_trend(completed, "month"), "利润趋势(月)"))
+    month = profit_trend(completed, "month")
+    quarter = profit_trend(completed, "quarter")
+    rep = repurchase_analysis(completed)
+    mat = material_consumption(materials)
+    if json_out:
+        import json
+        print(json.dumps({
+            "profitTrendMonth": month, "profitTrendQuarter": quarter,
+            "repurchase": rep, "materialConsumption": mat,
+        }, ensure_ascii=False, default=str))
+        return
+    print(render_report(month, "利润趋势(月)"))
     print()
-    print(render_report(repurchase_analysis(completed), "客户复购与价值分析"))
+    print(render_report(quarter, "利润趋势(季度)"))
     print()
-    print(render_report(material_consumption(materials), "材料消耗分析"))
+    print(render_report(rep, "客户复购与价值分析"))
+    print()
+    print(render_report(mat, "材料消耗分析"))
+
+
+if __name__ == "__main__":
+    import sys
+    args = sys.argv[1:]
+    json_out = "--json" in args
+    args = [a for a in args if a != "--json"]
+
+    if args and args[0] == "--mysql":
+        # MySQL 直连模式: python analytics.py --mysql [host] [user] [password] [db] [--json]
+        host = args[1] if len(args) > 1 else "127.0.0.1"
+        user = args[2] if len(args) > 2 else "handcraft"
+        pwd = args[3] if len(args) > 3 else "handcraft123"
+        db = args[4] if len(args) > 4 else "handcraft_order"
+        try:
+            import pymysql
+        except ImportError:
+            print("缺少 pymysql: pip install pymysql", file=sys.stderr)
+            sys.exit(1)
+        _run(lambda: pymysql.connect(host=host, user=user, password=pwd,
+                                     database=db, charset="utf8mb4"), json_out)
+    elif args and args[0].endswith(".db"):
+        # SQLite 模式: python analytics.py demo.db [--json]
+        import sqlite3
+        _run(lambda: sqlite3.connect(args[0]), json_out)
+    else:
+        print("用法:")
+        print("  python analytics.py --mysql [host] [user] [password] [db] [--json]   # MySQL 生产库")
+        print("  python analytics.py demo.db [--json]                                 # SQLite 演示库")
+        print("演示种子: python analytics_demo.py")
+        sys.exit(0)

@@ -72,7 +72,7 @@
 | Python 智能分类 + 测试 | ✅ 已实现，本仓库可运行（`python python/test_order_classifier.py`） |
 | Python 经营分析 + 演示 | ✅ 已实现，SQLite 演示可运行（`python python/analytics_demo.py`） |
 | MySQL 建库脚本 | ✅ 已编写（本机无 MySQL，未实际建库，需在有 MySQL8 环境执行 `sql/schema.sql`） |
-| Java 后端 | 🚧 骨架（本机无 JDK，未编译，需 JDK17+Maven 后开发） |
+| Java 后端 | ✅ 已实现（Spring Boot 3.2.5 + MySQL8），四角色全流程 E2E 116/116 通过 |
 | Qt 客户端 | 🚧 规划（本机无 Qt/Android SDK，需对应环境开发） |
 
 ## 快速开始（Python 部分）
