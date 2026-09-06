@@ -100,7 +100,8 @@ public class AdminController {
 
     @PostMapping("/material-categories")
     public Map<String, Object> createMaterialCategory(@RequestBody Map<String, Object> body) {
-        AuthContext.requireRole(Role.ADMIN);
+        // 材料品类允许创作者自建(单人工作室无专职管理员时保证库存可用)
+        AuthContext.requireRole(Role.ADMIN, Role.CREATOR);
         return createCategory("material_category", body, "material_category_id");
     }
 

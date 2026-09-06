@@ -110,12 +110,17 @@ MainWindow::MainWindow(const QString &role, const QString &realName, QWidget *pa
 
         auto *mp = new QWidget(this); auto *ml = new QVBoxLayout(mp);
         m_materials = makeTable({"ID","材料","规格","单位","库存","预警阈值","单价","品类"});
+        connect(m_materials, &QTableWidget::cellDoubleClicked, this, [this](int r, int) {
+            m_materials->selectRow(r);          // 双击 = 快捷入库
+            stockInOut(true);
+        });
         ml->addWidget(m_materials);
         auto *mb = new QHBoxLayout();
-        for (const QString &txt : {"刷新", "入库", "出库"}) {
+        for (const QString &txt : {"刷新", "新增材料", "入库", "出库"}) {
             auto *b = new QPushButton(txt, mp);
             mb->addWidget(b);
             if (txt == "刷新") connect(b, &QPushButton::clicked, this, &MainWindow::refreshMaterials);
+            else if (txt == "新增材料") connect(b, &QPushButton::clicked, this, &MainWindow::createMaterial);
             else if (txt == "入库") connect(b, &QPushButton::clicked, this, [this]{ stockInOut(true); });
             else connect(b, &QPushButton::clicked, this, [this]{ stockInOut(false); });
         }
@@ -202,30 +207,58 @@ void MainWindow::refreshCustomers() {
 
 // ==================== 创作者: 业务操作 ====================
 void MainWindow::createOrder() {
-    const QString customer = askText("新建订单", "客户ID(现有客户, 如 1/2):");
-    const QString product = askText("新建订单", "产品名称/描述(含定制/现货/批量等关键词将自动分类):");
-    if (customer.isEmpty() || product.isEmpty()) return;
-    bool ok = false;
-    const double price = QInputDialog::getDouble(this, "新建订单", "单价:", 100, 0, 1000000, 2, &ok);
-    if (!ok) return;
-    Api::inst()->post("/api/orders",
-        QJsonObject{{"customerId", customer.toLongLong()}, {"productName", product},
-                    {"requirement", product}, {"quantity", 1}, {"unitPrice", price}},
-        [this](int code, const QJsonValue &d) {
-            if (code != 200) { showError(); return; }
-            const QJsonObject o = d.toObject();
-            const QJsonObject clz = o.value("classify").toObject();
-            QMessageBox::information(this, "智能分类结果",
-                QStringLiteral("订单 #%1 创建成功\n类型: %2\n预估工期: %3 天\n预估完成: %4\n%5")
-                    .arg(o.value("orderId").toVariant().toString())
-                    .arg(clz.value("orderTypeLabel").toString())
-                    .arg(clz.value("estimateDays").toInt())
-                    .arg(clz.value("estimatedCompleteDate").toString())
-                    .arg(o.value("warn").toString()));
-            refreshOrders();
-        });
+    // 先取客户列表: 白纸环境下无客户无法下单, 必须明确引导
+    Api::inst()->get("/api/customers", [this](int code, const QJsonValue &d) {
+        if (code != 200) { showError(); return; }
+        const QJsonArray arr = d.toArray();
+        if (arr.isEmpty()) {
+            QMessageBox::information(this, "还不能新建订单",
+                "当前还没有客户档案。\n\n请先点击左侧「客户」→「新增客户」添加客户；\n"
+                "或让顾客在登录页「注册新账号」(注册后自动成为你的客户)。\n\n添加客户后即可回来新建订单。");
+            if (m_nav) m_nav->setCurrentRow(2);   // 切到客户页
+            return;
+        }
+        QStringList names, ids;
+        for (const auto &v : arr) {
+            const QJsonObject o = v.toObject();
+            names << QStringLiteral("%1(电话%2)").arg(o.value("name").toString(),
+                                                       o.value("phoneMasked").toString());
+            ids << o.value("customerId").toVariant().toString();
+        }
+        bool ok = false;
+        const QString chosen = QInputDialog::getItem(this, "新建订单 - 第1步/共3步",
+            "选择下单客户:", names, 0, false, &ok);
+        if (!ok) return;
+        const QString product = askText("新建订单 - 第2步/共3步",
+            "产品名称/描述(含 定制/现货/批量 等关键词将自动分类):");
+        if (product.isEmpty()) return;
+        const double price = QInputDialog::getDouble(this, "新建订单 - 第3步/共3步",
+            "单价(元):", 100, 0, 1000000, 2, &ok);
+        if (!ok) return;
+        const int idx = names.indexOf(chosen);
+        if (idx < 0) return;
+        Api::inst()->post("/api/orders",
+            QJsonObject{{"customerId", ids.at(idx).toLongLong()},
+                        {"productName", product}, {"requirement", product},
+                        {"quantity", 1}, {"unitPrice", price}},
+            [this](int code2, const QJsonValue &d2) {
+                if (code2 != 200) {
+                    QMessageBox::warning(this, "创建失败", "服务器返回: " + ApiClient::inst()->lastError());
+                    return;
+                }
+                const QJsonObject o = d2.toObject();
+                const QJsonObject clz = o.value("classify").toObject();
+                QMessageBox::information(this, "智能分类结果",
+                    QStringLiteral("订单 #%1 创建成功\n类型: %2\n预估工期: %3 天\n预估完成: %4\n%5")
+                        .arg(o.value("orderId").toVariant().toString())
+                        .arg(clz.value("orderTypeLabel").toString())
+                        .arg(clz.value("estimateDays").toInt())
+                        .arg(clz.value("estimatedCompleteDate").toString())
+                        .arg(o.value("warn").toString()));
+                refreshOrders();
+            });
+    });
 }
-
 void MainWindow::advanceOrder() {
     const int row = m_orders->currentRow();
     if (row < 0) { toast("请先选中一个订单"); return; }
@@ -294,7 +327,18 @@ void MainWindow::archiveOrder() {
 
 void MainWindow::stockInOut(bool isIn) {
     const int row = m_materials->currentRow();
-    if (row < 0) { toast("请先在库存页选中材料"); return; }
+    if (row < 0) {
+        if (m_materials->rowCount() == 0) {
+            QMessageBox::information(this, "还没有材料",
+                "库存中还没有任何材料, 无法入库/出库。\n\n请先点击「新增材料」建档(含初始库存), 再使用入库/出库。");
+            createMaterial();
+            return;
+        }
+        QMessageBox::warning(this, "请先选择材料",
+            (isIn ? "入库" : "出库") + QStringLiteral("前, 请先在列表中单击选中要操作的材料行。\n\n"
+            "提示: 双击材料行可直接弹出入库窗口。"));
+        return;
+    }
     const QString mid = m_materials->item(row, 0)->text();
     const QString qty = askText(isIn ? "入库" : "出库", "数量:");
     if (qty.isEmpty()) return;
@@ -307,6 +351,54 @@ void MainWindow::stockInOut(bool isIn) {
         });
 }
 
+void MainWindow::createMaterial() {
+    Api::inst()->get("/api/admin/material-categories", [this](int code, const QJsonValue &d) {
+        if (code != 200) { QMessageBox::warning(this, "获取品类失败", ApiClient::inst()->lastError()); return; }
+        QJsonArray cats = d.toArray();
+        if (cats.isEmpty()) {
+            const QString cn = askText("新建材料品类", "还没有材料品类, 先创建一个(如: 金属/皮革/陶土/线材):");
+            if (cn.isEmpty()) return;
+            Api::inst()->post("/api/admin/material-categories", QJsonObject{{"name", cn}},
+                [this](int c2, const QJsonValue &) {
+                    if (c2 != 200) { QMessageBox::warning(this, "创建品类失败", ApiClient::inst()->lastError()); return; }
+                    toast("品类已创建, 继续新增材料...");
+                    createMaterial();
+                });
+            return;
+        }
+        QStringList names, ids;
+        for (const auto &v : cats) {
+            const QJsonObject o = v.toObject();
+            names << o.value("name").toString();
+            ids << o.value("id").toVariant().toString();
+        }
+        bool ok = false;
+        const QString cat = QInputDialog::getItem(this, "新增材料 - 1/5", "材料品类:", names, 0, false, &ok);
+        if (!ok) return;
+        const QString name = askText("新增材料 - 2/5", "材料名称(如: 925银链):");
+        if (name.isEmpty()) return;
+        const QString spec = askText("新增材料 - 3/5", "规格(可空, 如 45cm):");
+        QString unit = askText("新增材料 - 4/5", "单位(件/克/米/平方尺…):");
+        if (unit.isEmpty()) unit = "件";
+        const double stock = QInputDialog::getDouble(this, "新增材料 - 5/5", "初始库存:", 0, 0, 1e9, 2, &ok);
+        if (!ok) return;
+        const double thr = QInputDialog::getDouble(this, "新增材料 - 补充", "低库存预警阈值:", 5, 0, 1e9, 2, &ok);
+        if (!ok) return;
+        const double price = QInputDialog::getDouble(this, "新增材料 - 补充", "成本单价(元, 用于利润核算):", 0, 0, 1e9, 2, &ok);
+        if (!ok) return;
+        const int idx = names.indexOf(cat);
+        if (idx < 0) return;
+        Api::inst()->post("/api/materials",
+            QJsonObject{{"materialCategoryId", ids.at(idx).toLongLong()}, {"name", name},
+                        {"spec", spec}, {"unit", unit}, {"stockQty", stock},
+                        {"lowStockThreshold", thr}, {"unitPrice", price}},
+            [this](int c3, const QJsonValue &) {
+                if (c3 != 200) { QMessageBox::warning(this, "创建材料失败", ApiClient::inst()->lastError()); return; }
+                toast("材料已创建");
+                refreshMaterials();
+            });
+    });
+}
 void MainWindow::createCustomer() {
     const QString name = askText("新增客户", "称呼:");
     const QString phone = askText("新增客户", "手机号:");

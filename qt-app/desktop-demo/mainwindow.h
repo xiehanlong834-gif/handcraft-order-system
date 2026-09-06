@@ -50,6 +50,7 @@ private:
     void setLaborCost();
     void archiveOrder();
     void stockInOut(bool isIn);
+    void createMaterial();
     void createCustomer();
     // 客户操作
     void submitCustomRequest();
