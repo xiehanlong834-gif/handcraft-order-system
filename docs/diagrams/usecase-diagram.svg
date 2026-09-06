@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="640" viewBox="0 0 1080 640">
+<rect width="1080" height="640" fill="#f7fbff"/>
+<text x="20" y="26" font-size="16" font-weight="700" fill="#0f172a" font-family="Microsoft YaHei, sans-serif">用例图 · 四类角色</text>
+<g stroke="#0f172a" stroke-width="1.6" fill="none"><circle cx="70" cy="52" r="12"/><line x1="70" y1="64" x2="70" y2="94"/><line x1="56" y1="76" x2="84" y2="76"/><line x1="70" y1="94" x2="56" y2="114"/><line x1="70" y1="94" x2="84" y2="114"/><line x1="70" y1="114" x2="54" y2="136"/><line x1="70" y1="114" x2="86" y2="136"/></g>
+<text x="70" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a" font-family="Microsoft YaHei, sans-serif">创作者</text>
+<g stroke="#0f172a" stroke-width="1.6" fill="none"><circle cx="70" cy="212" r="12"/><line x1="70" y1="224" x2="70" y2="254"/><line x1="56" y1="236" x2="84" y2="236"/><line x1="70" y1="254" x2="56" y2="274"/><line x1="70" y1="254" x2="84" y2="274"/><line x1="70" y1="274" x2="54" y2="296"/><line x1="70" y1="274" x2="86" y2="296"/></g>
+<text x="70" y="314" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a" font-family="Microsoft YaHei, sans-serif">客户</text>
+<g stroke="#0f172a" stroke-width="1.6" fill="none"><circle cx="70" cy="382" r="12"/><line x1="70" y1="394" x2="70" y2="424"/><line x1="56" y1="406" x2="84" y2="406"/><line x1="70" y1="424" x2="56" y2="444"/><line x1="70" y1="424" x2="84" y2="444"/><line x1="70" y1="444" x2="54" y2="466"/><line x1="70" y1="444" x2="86" y2="466"/></g>
+<text x="70" y="484" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a" font-family="Microsoft YaHei, sans-serif">管理员</text>
+<g stroke="#0f172a" stroke-width="1.6" fill="none"><circle cx="70" cy="542" r="12"/><line x1="70" y1="554" x2="70" y2="584"/><line x1="56" y1="566" x2="84" y2="566"/><line x1="70" y1="584" x2="56" y2="604"/><line x1="70" y1="584" x2="84" y2="604"/><line x1="70" y1="604" x2="54" y2="626"/><line x1="70" y1="604" x2="86" y2="626"/></g>
+<text x="70" y="644" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a" font-family="Microsoft YaHei, sans-serif">财务查看者</text>
+<ellipse cx="330" cy="60" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="64" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">登录认证</text>
+<ellipse cx="330" cy="120" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="124" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">创建订单*</text>
+<ellipse cx="330" cy="180" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="184" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">状态机流转*</text>
+<ellipse cx="330" cy="240" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="244" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">录入耗料/工时*</text>
+<ellipse cx="640" cy="60" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="64" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">库存出入库*</text>
+<ellipse cx="640" cy="120" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="124" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">客户管理</text>
+<ellipse cx="640" cy="180" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="184" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">排期日历/提醒</text>
+<ellipse cx="640" cy="240" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="244" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">智能订单分类 &lt;&lt;system>></text>
+<ellipse cx="330" cy="60" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="64" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">登录认证</text>
+<line x1="100" y1="100" x2="330" y2="60" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="330" cy="120" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="124" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">创建订单*</text>
+<line x1="100" y1="100" x2="330" y2="120" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="330" cy="180" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="184" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">状态机流转*</text>
+<line x1="100" y1="100" x2="330" y2="180" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="330" cy="240" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="330" y="244" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">录入耗料/工时*</text>
+<line x1="100" y1="100" x2="330" y2="240" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="640" cy="60" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="64" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">库存出入库*</text>
+<line x1="100" y1="140" x2="640" y2="60" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="640" cy="120" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="124" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">客户管理</text>
+<line x1="100" y1="140" x2="640" y2="120" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="640" cy="180" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="184" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">排期日历/提醒</text>
+<line x1="100" y1="140" x2="640" y2="180" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="640" cy="240" rx="95.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="640" y="244" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">智能订单分类 &lt;&lt;system>></text>
+<line x1="100" y1="140" x2="640" y2="240" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="300" cy="330" rx="90.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="300" y="334" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">我的订单/进度</text>
+<line x1="100" y1="270" x2="300" y2="330" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="610" cy="330" rx="90.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="610" y="334" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">提交定制需求*</text>
+<line x1="100" y1="270" x2="610" y2="330" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="610" cy="390" rx="90.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="610" y="394" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">追踪预计完成</text>
+<line x1="100" y1="270" x2="610" y2="390" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="300" cy="480" rx="75.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="300" y="484" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">用户管理</text>
+<line x1="100" y1="440" x2="300" y2="480" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="610" cy="470" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="610" y="474" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">产品/材料分类</text>
+<line x1="100" y1="440" x2="610" y2="470" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="610" cy="530" rx="85.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="610" y="534" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">公告发布</text>
+<line x1="100" y1="440" x2="610" y2="530" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="300" cy="545" rx="75.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="300" y="549" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">经营总览</text>
+<line x1="100" y1="440" x2="300" y2="545" stroke="#94a3b8" stroke-width="1.2"/>
+<ellipse cx="450" cy="610" rx="160.0" ry="20" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.3"/>
+<text x="450" y="614" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">经营报表(收支/趋势/复购/材料) &lt;&lt;finance+admin>></text>
+<line x1="100" y1="600" x2="450" y2="610" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="20" y="632" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">* 与智能分类联动: 建单自动识别类型与工期</text>
+</svg>

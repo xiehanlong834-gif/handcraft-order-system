@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>独立手作创作者订单管理系统 - 客户端 UI 预览</title>
+<style>
+  /* ===== 与 Qt 客户端一致的 vllm-hust 蓝白 token ===== */
+  :root {
+    --bg:#f7fbff; --panel:#ffffff; --ink:#0f172a; --muted:#64748b;
+    --line:#dbe7f3; --blue:#1d4ed8; --blue-soft:#eef4ff; --cyan:#0ea5e9;
+    --green:#16a34a; --amber-bg:#e5f2ff; --amber-line:#bfdbfe;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; font-family:"Microsoft YaHei","Segoe UI",sans-serif; }
+  body { background:#e2e8f0; padding:24px; display:flex; justify-content:center; }
+  /* 窗口外壳 */
+  .win { width:1180px; background:var(--bg); border-radius:12px; overflow:hidden;
+         box-shadow:0 22px 58px rgba(15,23,42,.18); border:1px solid #cbd5e1; }
+  .titlebar { background:#0f172a; color:#e6edf3; font-size:13px; padding:9px 16px;
+              display:flex; justify-content:space-between; }
+  .titlebar .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; background:#1d4ed8; }
+  .shell { display:flex; min-height:560px; }
+  /* 左侧导航 */
+  .nav { width:172px; background:var(--panel); border-right:1px solid var(--line); padding:10px 0; }
+  .nav .brand { padding:10px 18px 14px; font-weight:700; color:var(--ink); font-size:14px; border-bottom:1px solid var(--line); margin-bottom:8px; }
+  .nav .brand small { display:block; color:var(--muted); font-weight:400; font-size:11px; }
+  .nav a { display:block; padding:11px 18px; color:#475569; text-decoration:none;
+           border-left:3px solid transparent; font-size:13px; }
+  .nav a:hover { background:#f1f5f9; color:var(--ink); }
+  .nav a.active { background:var(--blue-soft); color:var(--blue); border-left-color:var(--blue); font-weight:700; }
+  /* 内容 */
+  .content { flex:1; padding:16px 20px; }
+  .banner { background:var(--amber-bg); color:var(--blue); border:1px solid var(--amber-line);
+            border-radius:8px; padding:9px 14px; font-size:13px; font-weight:600; margin-bottom:14px; }
+  table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line);
+          border-radius:10px; overflow:hidden; font-size:13px; }
+  th { background:#f8fbff; color:var(--muted); font-weight:700; text-align:left;
+       padding:10px 12px; border-bottom:1px solid var(--line); }
+  td { padding:9px 12px; border-bottom:1px solid #f1f6fc; color:var(--ink); }
+  tr:nth-child(even) td { background:#fbfdff; }
+  tr:hover td { background:#f1f6fd; }
+  .pill { display:inline-block; padding:1px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+  .t-custom { background:#e5f2ff; color:#1d4ed8; }
+  .t-ready  { background:#e0f2fe; color:#0e7490; }
+  .t-batch  { background:#eef2ff; color:#4f46e5; }
+  .t-general{ background:#f1f5f9; color:#475569; }
+  .s-done   { background:#dcfce7; color:#15803d; }
+  .s-work   { background:#dbeafe; color:#1d4ed8; }
+  .s-ship   { background:#fef3c7; color:#b45309; }
+  .s-wait   { background:#f1f5f9; color:#64748b; }
+  .s-cancel { background:#fee2e2; color:#b91c1c; }
+  .num { text-align:right; }
+  .actions { margin-top:14px; display:flex; gap:10px; }
+  .btn { background:var(--panel); border:1px solid #c7d6ea; color:#1e293b; border-radius:8px;
+         padding:7px 18px; font-size:13px; cursor:pointer; }
+  .btn:hover { border-color:var(--blue); color:var(--blue); background:#f1f6fd; }
+  .btn.primary { background:var(--blue); border-color:var(--blue); color:#fff; font-weight:600; }
+  .btn.primary:hover { background:#1e40af; }
+  .statusbar { background:var(--panel); border-top:1px solid var(--line); color:var(--muted);
+               padding:6px 16px; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="win">
+  <!-- 窗口标题栏(模仿桌面标题) -->
+  <div class="titlebar">
+    <span><span class="dot"></span>独立手作创作者订单管理系统 —— 陈手作 (creator)</span>
+    <span>— □ ×</span>
+  </div>
+  <div class="shell">
+    <!-- 左侧导航: 创作者角色 -->
+    <div class="nav">
+      <div class="brand">手作订单管理<small>Handcraft Order</small></div>
+      <a class="active" href="#">📋 订单</a>
+      <a href="#">📦 库存</a>
+      <a href="#">👥 客户</a>
+    </div>
+    <!-- 内容: 订单页 -->
+    <div class="content">
+      <div class="banner">⏰ 工期提醒(1): 小林 · 定制真皮卡包 · 截止2026-09-08</div>
+      <table>
+        <tr><th>ID</th><th>订单号</th><th>客户</th><th>产品</th><th>类型</th><th>数量</th><th>状态</th><th class="num">收入</th><th class="num">利润</th><th>截止日期</th></tr>
+        <tr><td>5</td><td>HC20260906152033001</td><td>小林</td><td>定制真皮卡包</td><td><span class="pill t-custom">定制类</span></td><td>1</td><td><span class="pill s-work">制作中</span></td><td class="num">—</td><td class="num">—</td><td>2026-09-13</td></tr>
+        <tr><td>4</td><td>HC20260906151847088</td><td>小林</td><td>普通帆布袋</td><td><span class="pill t-general">通用类</span></td><td>1</td><td><span class="pill s-cancel">已取消</span></td><td class="num">99.00</td><td class="num">—</td><td>2026-09-09</td></tr>
+        <tr><td>3</td><td>HC20260906151712066</td><td>阿May</td><td>批量编织杯垫 团购</td><td><span class="pill t-batch">批量类</span></td><td>60</td><td><span class="pill s-wait">待确认</span></td><td class="num">2700.00</td><td class="num">—</td><td>2026-09-21</td></tr>
+        <tr><td>2</td><td>HC20260906151637012</td><td>阿May</td><td>现货珍珠耳环</td><td><span class="pill t-ready">现货类</span></td><td>3</td><td><span class="pill s-ship">待发货</span></td><td class="num">360.00</td><td class="num">284.00</td><td>2026-09-08</td></tr>
+        <tr><td>1</td><td>HC20260906151322047</td><td>小林</td><td>刻名字的定制银手镯</td><td><span class="pill t-custom">定制类</span></td><td>1</td><td><span class="pill s-done">已完成</span></td><td class="num">680.00</td><td class="num">680.00</td><td>2026-09-13</td></tr>
+      </table>
+      <div class="actions">
+        <button class="btn">刷新</button>
+        <button class="btn primary">新建订单(自动分类)</button>
+        <button class="btn">推进状态</button>
+        <button class="btn">登记耗料</button>
+        <button class="btn">录入工时</button>
+        <button class="btn">取消/归档</button>
+      </div>
+    </div>
+  </div>
+  <div class="statusbar">就绪 · 订单 5 条 · 后端 http://127.0.0.1:8080</div>
+</div>
+</body>
+</html>

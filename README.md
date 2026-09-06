@@ -62,7 +62,7 @@
 │   └── requirements.txt
 ├── java-backend/             # Java REST API 骨架（需 JDK17+Maven 环境开发）
 ├── qt-app/                   # Qt 移动端 APP 结构规划（需 Qt/Android 环境）
-└── docs/                     # 需求与设计文档（随开发补充）
+└── docs/                     # 课程文档: 01需求规格/02概要/03详细/04数据库/05测试报告/06部署 + diagrams/
 ```
 
 ## 实现状态
@@ -73,7 +73,7 @@
 | Python 经营分析 + 演示 | ✅ 已实现，SQLite 演示可运行（`python python/analytics_demo.py`） |
 | MySQL 建库脚本 | ✅ 已编写（本机无 MySQL，未实际建库，需在有 MySQL8 环境执行 `sql/schema.sql`） |
 | Java 后端 | ✅ 已实现（Spring Boot 3.2.5 + MySQL8），四角色全流程 E2E 116/116 通过 |
-| Qt 客户端 | 🚧 规划（本机无 Qt/Android SDK，需对应环境开发） |
+| Qt 客户端 | ✅ 桌面演示版已实现(蓝白主题)，编译/登录/四角色界面均实测；Android 打包需另行安装 SDK |
 
 ## 快速开始（Python 部分）
 

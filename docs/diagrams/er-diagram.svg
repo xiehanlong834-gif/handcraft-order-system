@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="730" viewBox="0 0 880 730">
+<rect width="880" height="730" fill="#f7fbff"/>
+<text x="20" y="26" font-size="16" font-weight="700" fill="#0f172a" font-family="Microsoft YaHei, sans-serif">E-R 图 · handcraft_order 数据库(11 表, 简化展示核心字段)</text>
+<g><rect x="40" y="40" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="150" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">role 角色</text>
+<text x="52" y="78" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">role_id PK</text>
+<text x="52" y="95" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">role_code</text>
+<text x="52" y="112" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">role_name</text>
+</g>
+<g><rect x="320" y="40" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="430" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">user 用户</text>
+<text x="332" y="78" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">user_id PK</text>
+<text x="332" y="95" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">username</text>
+<text x="332" y="112" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">password_hash(BCrypt)</text>
+<text x="332" y="129" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">role_id FK</text>
+<text x="332" y="146" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">customer_id FK</text>
+</g>
+<g><rect x="600" y="40" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="710" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">customer 客户</text>
+<text x="612" y="78" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">customer_id PK</text>
+<text x="612" y="95" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">name</text>
+<text x="612" y="112" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">phone(脱敏)</text>
+<text x="612" y="129" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">creator_id FK</text>
+</g>
+<g><rect x="40" y="220" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="150" y="240" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">product_category</text>
+<text x="52" y="258" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">id PK</text>
+<text x="52" y="275" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">name</text>
+</g>
+<g><rect x="320" y="210" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="430" y="230" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">orders 订单</text>
+<text x="332" y="248" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">order_id PK</text>
+<text x="332" y="265" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">order_no</text>
+<text x="332" y="282" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">customer/creator FK</text>
+<text x="332" y="299" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">order_type/status</text>
+<text x="332" y="316" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">cost/profit 字段</text>
+<text x="332" y="333" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">estimate_dates</text>
+</g>
+<g><rect x="600" y="210" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="710" y="230" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">order_status_log</text>
+<text x="612" y="248" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">log_id PK</text>
+<text x="612" y="265" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">order_id FK</text>
+<text x="612" y="282" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">from/to</text>
+<text x="612" y="299" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">operator_id FK</text>
+</g>
+<g><rect x="40" y="420" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="150" y="440" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">material_category</text>
+<text x="52" y="458" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">id PK</text>
+<text x="52" y="475" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">name</text>
+</g>
+<g><rect x="320" y="410" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="430" y="430" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">material 材料</text>
+<text x="332" y="448" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">material_id PK</text>
+<text x="332" y="465" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">name/spec/unit</text>
+<text x="332" y="482" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">stock_qty</text>
+<text x="332" y="499" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">low_threshold</text>
+<text x="332" y="516" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">unit_price</text>
+</g>
+<g><rect x="600" y="410" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="710" y="430" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">stock_movement</text>
+<text x="612" y="448" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">movement_id PK</text>
+<text x="612" y="465" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">material_id FK</text>
+<text x="612" y="482" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">direction IN/OUT</text>
+<text x="612" y="499" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">order_id FK?</text>
+<text x="612" y="516" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">quantity</text>
+</g>
+<g><rect x="320" y="590" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="430" y="610" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">order_material</text>
+<text x="332" y="628" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">id PK</text>
+<text x="332" y="645" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">order_id FK</text>
+<text x="332" y="662" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">material_id FK</text>
+<text x="332" y="679" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">qty_used</text>
+<text x="332" y="696" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">unit_cost 快照</text>
+</g>
+<g><rect x="600" y="590" width="220" height="92" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.4"/>
+<text x="710" y="610" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="Microsoft YaHei, sans-serif">announcement</text>
+<text x="612" y="628" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">id PK</text>
+<text x="612" y="645" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">title/content</text>
+<text x="612" y="662" font-size="11" fill="#475569" font-family="Microsoft YaHei, sans-serif">publisher_id FK</text>
+</g>
+<line x1="260" y1="86" x2="320" y2="86" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="296.0" y="80.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">1:N 角色分配</text>
+<line x1="540" y1="86" x2="600" y2="86" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="576.0" y="80.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">N:1 归属档案</text>
+<line x1="430" y1="132" x2="430" y2="210" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="436.0" y="165.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">1:N 客户下单</text>
+<line x1="320" y1="132" x2="320" y2="210" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="326.0" y="165.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">N:1 创作者接单</text>
+<line x1="150" y1="132" x2="150" y2="220" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="156.0" y="170.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">1:N 分类</text>
+<line x1="540" y1="256" x2="600" y2="256" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="576.0" y="250.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">1:N 审计</text>
+<line x1="260" y1="464" x2="320" y2="464" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="296.0" y="458.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">1:N 品类</text>
+<line x1="540" y1="464" x2="600" y2="464" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="576.0" y="458.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">1:N 流水</text>
+<line x1="340" y1="502" x2="180" y2="590" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="266.0" y="540.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">N:M 耗料</text>
+<line x1="280" y1="540" x2="180" y2="590" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="236.0" y="559.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">1:N 归属</text>
+<line x1="430" y1="502" x2="430" y2="590" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="436.0" y="540.0" font-size="11" fill="#64748b" font-family="Microsoft YaHei, sans-serif">N:M 耗料</text>
+</svg>
